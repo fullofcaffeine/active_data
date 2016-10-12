@@ -13,6 +13,7 @@ require 'active_data/model/associations/base'
 require 'active_data/model/associations/embed_association'
 require 'active_data/model/associations/embeds_one'
 require 'active_data/model/associations/embeds_many'
+require 'active_data/model/associations/reference_association'
 require 'active_data/model/associations/references_one'
 require 'active_data/model/associations/references_many'
 

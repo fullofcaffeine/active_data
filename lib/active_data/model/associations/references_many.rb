@@ -1,7 +1,7 @@
 module ActiveData
   module Model
     module Associations
-      class ReferencesMany < Base
+      class ReferencesMany < ReferenceAssociation
         def apply_changes
           present_keys = target.reject(&:marked_for_destruction?).map(&reflection.primary_key).compact
           write_source(present_keys)
@@ -24,7 +24,7 @@ module ActiveData
             if default.all? { |object| object.is_a?(reflection.klass) }
               default
             elsif default.all? { |object| object.is_a?(Hash) }
-              default.map { |attributes| reflection.klass.new(attributes) }
+              default.map { |attributes| build_object(attributes) }
             else
               scope(default).to_a
             end

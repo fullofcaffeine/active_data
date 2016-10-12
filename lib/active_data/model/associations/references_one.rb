@@ -1,7 +1,19 @@
 module ActiveData
   module Model
     module Associations
-      class ReferencesOne < Base
+      class ReferencesOne < ReferenceAssociation
+        def build(attributes = {})
+          self.target = build_object(attributes)
+        end
+
+        def create(attributes = {})
+          build(attributes).tap(&:save)
+        end
+
+        def create!(attributes = {})
+          build(attributes).tap(&:save!)
+        end
+
         def apply_changes
           if target && !target.marked_for_destruction?
             write_source identify
@@ -29,7 +41,7 @@ module ActiveData
           when reflection.klass
             default
           when Hash
-            reflection.klass.new(default)
+            build_object(default)
           else
             scope(default).first
           end
