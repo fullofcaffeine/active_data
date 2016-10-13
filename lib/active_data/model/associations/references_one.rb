@@ -15,12 +15,17 @@ module ActiveData
         end
 
         def apply_changes
-          if target && !target.marked_for_destruction?
-            write_source identify
+          if target
+            if target.marked_for_destruction? && reflection.autosave?
+              target.destroy
+            elsif target.new_record? || (reflection.autosave? && target.changed?)
+              target.save
+            else
+              true
+            end
           else
-            write_source nil
+            true
           end
-          true
         end
 
         def target=(object)
@@ -68,7 +73,7 @@ module ActiveData
           transaction do
             attribute.pollute do
               self.target = object
-              apply_changes!
+              write_source identify
             end
           end
 
@@ -81,7 +86,7 @@ module ActiveData
         end
 
         def identify
-          target.try(reflection.primary_key)
+          target.try(reflection.primary_key) if target.try(:persisted?)
         end
 
       private

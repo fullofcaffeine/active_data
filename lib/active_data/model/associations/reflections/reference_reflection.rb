@@ -40,6 +40,10 @@ module ActiveData
           def embedded?
             false
           end
+
+          def autosave?
+            !!options[:autosave]
+          end
         end
       end
     end
